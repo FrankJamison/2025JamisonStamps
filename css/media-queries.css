@@ -102,24 +102,13 @@ screen and (max-width: 740px) {
         padding: 12px 12px 12px 12px;
     }
 
-
-
-    /* MQS TEXT & GRAPHIC LOGO */
-
-    #headerdiv {
-        padding: 0px 0px 0px 0px;
+    /* PAYPAL: allow title/price to wrap on mobile */
+    .item-header {
+        flex-wrap: wrap;
     }
 
-    .text-logo-box {
-        padding: 15px 5px 15px 5px;
-    }
-
-    .logo {
-        font-size: 25px;
-    }
-
-    .logo2 {
-        font-size: 25px;
+    .item-header .price-container {
+        margin-left: 0;
     }
 
 
@@ -134,51 +123,17 @@ screen and (max-width: 740px) {
 
 
 
-    /* SOCIAL ICONS */
-
-    .soc-box {
-        position: absolute;
-        top: 7px;
-        right: 5px;
-    }
-
-    .socialspace {
-        padding-left: 1px;
-        padding-right: 0px;
-    }
-
-    .socialicon {
-        width: 18px;
-        height: auto;
-        border: #FFFFFF 0px solid;
-        display: block;
-    }
-
-
-
-    /* MENU #2 menu-2.js */
-
-    #menu2div {
-        display: none;
-    }
-
-
-
     /* MOBILE MENU */
 
-    .menu-footer {
-        height: 0px;
-    }
-
-    .menu-footer #menudiv {
-        display: none;
-    }
-
-    #mobile-menu-icon {
+    #mobile-menu-icon,
+    #mobile-menu-icon-footer,
+    .menu-toggle {
         display: block;
     }
 
-    #menusub {
+    #menusub,
+    #menusub-footer,
+    .menusub {
         background-color: var(--nav-bg);
         width: 100%;
         padding-top: 0px;
@@ -193,7 +148,15 @@ screen and (max-width: 740px) {
         box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.20);
     }
 
-    #menusub a {
+    #menusub.is-open,
+    #menusub-footer.is-open,
+    .menusub.is-open {
+        display: block;
+    }
+
+    #menusub a,
+    #menusub-footer a,
+    .menusub a {
         color: var(--nav-ink);
         background-color: transparent;
         font-size: 14px;
@@ -202,7 +165,9 @@ screen and (max-width: 740px) {
         display: block;
     }
 
-    #menusub a:hover {
+    #menusub a:hover,
+    #menusub-footer a:hover,
+    .menusub a:hover {
         color: #ffffff;
         background-color: var(--nav-hover);
     }
@@ -211,7 +176,11 @@ screen and (max-width: 740px) {
     /* SUB MENU CORNER ROUNDING */
 
     #menusub,
-    #menusub a:first-child {
+    #menusub-footer,
+    .menusub,
+    #menusub a:first-child,
+    #menusub-footer a:first-child,
+    .menusub a:first-child {
         -moz-border-radius-topleft: 0px;
         -moz-border-radius-topright: 0px;
         border-top-left-radius: 0px;
@@ -281,14 +250,7 @@ screen and (max-width: 482px) {
 
     /* MQS GENERAL */
 
-    .hidemobile {
-        display: none;
-    }
 
-    .splits-xtramargin {
-        margin-top: 12px;
-        margin-bottom: 12px;
-    }
 
 
 
@@ -306,50 +268,10 @@ screen and (max-width: 482px) {
 
 
 
-    /* MQS TEXT & GRAPHIC LOGO */
-
-    #headerdiv {
-        padding: 0px 0px 0px 0px;
-    }
-
-    .text-logo-box {
-        padding: 15px 5px 15px 5px;
-    }
-
-    .logo {
-        font-size: 19px;
-    }
-
-    .logo2 {
-        font-size: 19px;
-    }
-
-
-
-
     /* MQS FOOTER */
 
     #footerdiv {
         font-size: 10px;
-    }
-
-
-
-
-    /* MQS SIDEBAR - NOT USED WHEN SIDEBAR IS HIDDEN IN MQs ABOVE */
-
-    .sidebar-text {
-        font-size: 13px;
-        line-height: normal;
-    }
-
-    .side-links a {
-        font-size: 13px;
-        line-height: normal;
-    }
-
-    .sidebar-pad {
-        padding: 0px 0px 15px 0px;
     }
 
 
@@ -370,39 +292,8 @@ screen and (max-width: 482px) {
 
 
 
-    /* stamps CART PAGE */
-
-    .price span {
-        font-size: 16px;
-    }
-
-    .product-title {
-        font-size: 16px;
-    }
-
-    .product-image-box {
-        float: none;
-        width: auto;
-        padding-right: 0px;
-    }
-
-    .cart-image {
-        width: auto;
-        max-width: 100%;
-        height: auto;
-    }
-
-    input[type=submit].button-order {
-        font-size: 16px;
-        padding: 6px 3px 6px 3px;
-    }
-
-
-
-
     /* LINKS PAGE */
 
-    .searchform,
     .searchbutton {
         font-size: 12px;
     }

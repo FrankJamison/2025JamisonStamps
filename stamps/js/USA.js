@@ -2059,7 +2059,7 @@ const stamps = [{
         condition: "Mint",
         hinged: "Never Hinged",
         gum: "Original Gum",
-        grade: "Gooid/Very Good",
+        grade: "Good/Very Good",
         price: 0.07,
         location: "LA01-0070-03-02",
         paypalId: "QAYA4W3BGFNZW"
@@ -3203,6 +3203,7 @@ function renderPagerAt(containerId, total, position) {
     if (!pager) {
         pager = document.createElement("div");
         pager.id = containerId;
+        pager.className = "pager";
         pager.style.display = "flex";
         pager.style.gap = "8px";
         pager.style.alignItems = "center";
@@ -3238,10 +3239,14 @@ function renderPagerAt(containerId, total, position) {
 
     // Jump-to TEXT input
     const jumpWrap = document.createElement("span");
+    jumpWrap.className = "pager-jump";
     jumpWrap.style.display = "inline-flex";
     jumpWrap.style.alignItems = "center";
     jumpWrap.style.gap = "6px";
+    jumpWrap.style.flexWrap = "wrap";
     jumpWrap.style.marginLeft = "8px";
+    jumpWrap.style.maxWidth = "100%";
+    jumpWrap.style.minWidth = "0";
 
     const jumpLabel = document.createElement("label");
     jumpLabel.textContent = "Jump to:";
@@ -3256,6 +3261,8 @@ function renderPagerAt(containerId, total, position) {
     input.value = String(currentPage);
     input.placeholder = "Page #";
     input.style.width = "64px";
+    input.style.maxWidth = "100%";
+    input.style.minWidth = "0";
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
             const val = parseInt(input.value, 10);

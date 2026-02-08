@@ -1,4 +1,3 @@
-
 # Jamison Stamps & Books — 2026 website refresh
 
 I built and maintain this repo as a **real-world, production static site** for Jamison Stamps & Books. It’s designed to be easy to host, easy to update, and friendly to collectors on phones, tablets, and desktops — without introducing a build pipeline or framework.
@@ -25,15 +24,13 @@ This is intentionally “boring” technology — by design.
 - **HTML**: hand-authored pages, semantic landmarks.
 - **CSS**: global theme + responsive media queries.
 - **JavaScript**:
-	- Shared layout “includes” (header/menu/footer/sidebar/calendar/contact).
-	- Small jQuery behaviors for the mobile menu and scroll-to-top.
-	- Stamps catalog renderer (filters, sorting, pagination, PayPal add-to-cart).
+	- Small vanilla behaviors for the mobile menu and scroll-to-top (`js/javascripts.js`).
+	- Stamps catalog renderer (filters, sorting, paging, PayPal add-to-cart) (`stamps/js/USA.js`).
 
 ### Third-party / external services
 
-- **jQuery 1.11.3** (`JQuery/jquery-1.11.3.min.js`) — used only for a couple of UI behaviors.
 - **PayPal Cart (NCP)** (`https://www.paypalobjects.com/ncp/cart/cart.js`) — used on the stamps catalog.
-- **Formspree** — handles contact form submissions (`contact.htm`).
+- **Formspree** — handles contact form submissions (`contact.html`).
 
 ## Repository structure
 
@@ -42,10 +39,12 @@ At a high level:
 ```
 /
 	index.html
-	about.htm
-	contact.htm
-	resources.htm
-	site_map.htm
+	about.html
+	contact.html
+	resources.html
+	site_map.html
+	thanks.html
+	thanks-payment.html
 	sitemap.xml
 	robots.txt
 
@@ -54,21 +53,12 @@ At a high level:
 		media-queries.css
 
 	js/
-		header.js
-		menu.js
-		footer.js
-		sidebar.js
-		calendar.js
-		contact.js
 		javascripts.js
 
 	stamps/
-		USA.htm
+		USA.html
 		css/stamps.css
 		js/USA.js
-
-	extras/
-		(historical samples / reference files)
 ```
 
 ### Why the `stamps/` folder is separate
@@ -107,41 +97,12 @@ Pages consistently use:
 - A top “image bar” that sets context per page.
 - A left main content area with a right sidebar (collapses on mobile).
 
-## Architecture: how the pages are composed
+## Architecture
 
-This repo avoids copy/pasting shared HTML across multiple pages by using lightweight JavaScript “includes”.
+This is a zero-build static site: each page is hand-authored HTML with a consistent header/nav/footer pattern, shared CSS, and a small amount of JavaScript.
 
-### Shared layout scripts
-
-There are two sets of shared layout scripts:
-
-- Main site includes under `js/` (used by `index.html`, `about.htm`, `contact.htm`, etc.)
-- Stamps subsite includes under `stamps/js/` (used by `stamps/USA.htm`)
-
-Main site shared layout scripts:
-
-- `js/header.js` — writes the site header/logo.
-- `js/menu.js` — writes primary navigation + the mobile menu button.
-- `js/footer.js` — writes the footer + the scroll-to-top anchor.
-- `js/sidebar.js` — writes a global “website topics” sidebar block.
-- `js/calendar.js` — writes the month calendar widget.
-- `js/contact.js` — writes the contact/address block.
-
-These scripts use `document.write()` so the shared markup appears in the correct spot during initial parsing.
-
-Tradeoff (intentional): `document.write()` is old-school, but it’s reliable for a no-build static site and keeps the pages simple to edit.
-
-### Subfolder-safe URLs
-
-For the main site includes, the scripts compute a `basePath` based on the current URL path so the same header/menu/footer work from:
-
-- the site root (`/`)
-- `stamps/` pages
-- `extras/` pages
-
-This avoids maintaining separate nav/header copies for subfolders.
-
-The stamps subsite scripts under `stamps/js/` use explicit relative links (for example `../index.html`).
+- Site-wide behavior lives in `js/javascripts.js` (mobile menu toggle + scroll-to-top).
+- The stamps catalog is a self-contained mini-app under `stamps/`.
 
 ## Accessibility
 
@@ -149,11 +110,11 @@ Accessibility improvements are implemented directly in markup/CSS, not via a fra
 
 - **Skip link** (`.skip-link`) to jump to `#maincontent`.
 - **Screen-reader-only utility** (`.sr-only`) used for form and control labels.
-- **Navigation semantics (main site pages)**: the primary menu is written as `<nav aria-label="Primary">`.
-- **Mobile menu ARIA (main site pages)**: `aria-controls` + `aria-expanded` are updated when toggling the menu.
+- **Navigation semantics**: the primary menu is written as `<nav aria-label="Primary navigation">`.
+- **Mobile menu ARIA**: `aria-controls` + `aria-expanded` are updated when toggling the menu.
 - **Forms**: explicit `<label for=...>` associations and a `<fieldset><legend>` for grouped radio controls.
 
-Note: the stamps subsite menu is older template markup; one future improvement would be bringing it into parity with the main site’s button/ARIA approach.
+The stamps catalog page follows the same landmark/menu patterns, and adds app-like controls (filter/sort/search) that use `.sr-only` labels.
 
 ## SEO and social sharing
 
@@ -165,9 +126,9 @@ Core pages include:
 
 Crawl management:
 
-- `robots.txt` disallows non-content/utility pages (`/extras/`, thank-you pages, etc.).
+- `robots.txt` disallows non-content/utility pages (thank-you pages, legacy URLs, etc.).
 - `sitemap.xml` is present for search engines.
-- `site_map.htm` is a human-readable “site map” page.
+- `site_map.html` is a human-readable “site map” page.
 
 ## JavaScript behavior details
 
@@ -185,7 +146,7 @@ This is intentionally small and isolated so that most pages remain stable, cache
 
 The catalog is implemented as a client-side renderer:
 
-- Page: `stamps/USA.htm`
+- Page: `stamps/USA.html`
 - Logic + dataset: `stamps/js/USA.js`
 - Styles: `stamps/css/stamps.css`
 
@@ -240,7 +201,7 @@ To keep the page responsive with a large list:
 
 ## Contact form
 
-The contact form on `contact.htm` posts to Formspree and then redirects to a thank-you page.
+The contact form on `contact.html` posts to Formspree and then redirects to a thank-you page.
 
 Implementation details:
 
@@ -270,19 +231,62 @@ Then open `http://localhost:8080/`.
 
 ## How to update content safely
 
+### Content checklist (non-developers)
+
+Use this as a quick “did I break anything?” list before publishing.
+
+- **Page title + description**: update `<title>` and `meta name="description"` to match the page content.
+- **Main heading**: ensure there’s one clear `<h1>` for the page topic.
+- **Navigation**: confirm the menu links still work and the current page is highlighted (if applicable).
+- **Links**: check external links open correctly; use meaningful link text (avoid “click here”).
+- **Images**: decorative/redundant images should have `alt=""`; informative images should have a short descriptive `alt`.
+- **Forms (if any)**: every input has a visible label; required fields still behave correctly.
+- **Mobile check**: look at the page on a narrow screen; confirm the mobile menu opens/closes and content reads well.
+- **Spellcheck**: scan for typos and inconsistent capitalization.
+- **If you added a new page**: consider whether it should be added to `sitemap.xml` and/or linked from `site_map.html`.
+
+### Images
+
+### Image optimization pass (optional)
+
+This repo stays “zero-build,” but you can run an occasional lightweight optimization pass on images before deploying.
+
+- Script: `tools/optimize-images.cmd`
+- Requires: ImageMagick (`magick` on PATH)
+
+Dry run (no changes):
+
+```bat
+tools\optimize-images.cmd
+```
+
+Optimize in place (with backups):
+
+```bat
+tools\optimize-images.cmd /inplace /backup
+```
+
+### Decorative images and `alt` text
+
+Rule of thumb:
+
+- If an image is purely decorative (layout/ornament, redundant next to visible text), use `alt=""`.
+- If an image conveys information not present in nearby text, use a short descriptive `alt`.
+- If an image is the only content inside a link/button, the `alt` should provide the accessible name (e.g., the search engine logos in `resources.html`).
+
 ### Adding a new page
 
 I follow the existing page pattern:
 
 1. Include `css/style.css` and `css/media-queries.css`.
-2. Include jQuery + `js/javascripts.js` (for mobile menu + scroll-to-top).
-3. Inject shared sections with `js/header.js`, `js/menu.js`, and `js/footer.js`.
+2. Include `js/javascripts.js` (for mobile menu + scroll-to-top).
+3. Copy the existing header/nav/footer pattern from a current page.
 4. Wrap main content in `<main id="maincontent">` so the skip link works.
 
 ### Updating navigation
 
-- Edit `js/menu.js` (root site navigation).
-- The stamps pages have their own menu include under `stamps/js/`.
+- Update the `<nav id="menudiv">` links in each top-level page to keep the menu consistent.
+- Update the stamps page navigation in `stamps/USA.html`.
 
 ### Updating the stamp inventory
 
@@ -295,9 +299,4 @@ Some files originated from a legacy site template and include vendor notices. I 
 
 ## Next improvements I’d consider
 
-If I were expanding this further, I’d likely:
-
-- Replace `document.write()` includes with a small compile step or server-side includes.
-- Reduce dependency on jQuery (it’s only used for a few behaviors).
-- Add a lightweight image optimization pass and ensure all decorative images have intentional alt behavior.
-- Add a simple content checklist for non-developers updating pages.
+(Intentionally left minimal — add items here as needed.)

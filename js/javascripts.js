@@ -1,78 +1,124 @@
-// Begin TEMPLATE SCRIPTS
+// Site behaviors (vanilla JS): scroll-to-top + mobile menu interactions
 
+var clickaway = "yes"; // USE CLICK OFF MENU SCRIPT | yes | no |
 
+function isMobileMenuActive() {
+    return window.innerWidth < 740;
+}
 
-var clickaway = "yes" // USE CLICK OFF MENU SCRIPT | yes | no |
+function closestPolyfill(el, selector) {
+    if (!el) return null;
+    if (el.closest) return el.closest(selector);
 
+    var node = el;
+    while (node && node.nodeType === 1) {
+        var matches = node.matches || node.msMatchesSelector || node.webkitMatchesSelector;
+        if (matches && matches.call(node, selector)) return node;
+        node = node.parentElement;
+    }
+    return null;
+}
 
-
-// YOU DO NOT NEED TO EDIT BELOW THIS LINE
-
-// COPYRIGHT 2025 � Allwebco Design Corporation
-// Unauthorized use or sale of this script is strictly prohibited by law
-
-
-
-
-
-// START SCROLL TO TOP ARROW SCRIPT
-
-$(document).ready(function() {
-
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 100) {
-            $('.scrollToTop').fadeIn();
-        } else {
-            $('.scrollToTop').fadeOut();
-        }
-    });
-
-    $('.scrollToTop').click(function() {
-        $('html, body').animate({
-            scrollTop: 0
-        }, 300);
-        return false;
-    });
-
-});
-
-// END SCROLL TO TOP ARROW SCRIPT
-
-
-
-
-
-// JQUERY CLICK MENU SCRIPT TOGGLE
+function setExpanded(triggerEl, expanded) {
+    if (triggerEl && triggerEl.setAttribute) {
+        triggerEl.setAttribute("aria-expanded", expanded ? "true" : "false");
+    }
+}
 
 function toggleMenu(divId, triggerEl) {
-    const $menu = $("#" + divId);
-    $menu.toggle("fast", function() {
-        if (triggerEl && triggerEl.setAttribute) {
-            const expandedNow = $menu.is(":visible");
-            triggerEl.setAttribute("aria-expanded", expandedNow ? "true" : "false");
+    var menu = document.getElementById(divId);
+    if (!menu) return;
+
+    var open = !menu.classList.contains("is-open");
+    if (open) {
+        menu.classList.add("is-open");
+    } else {
+        menu.classList.remove("is-open");
+    }
+    setExpanded(triggerEl, open);
+}
+
+function closeMenuIfOpen(divId, triggerId) {
+    var menu = document.getElementById(divId);
+    if (!menu) return;
+    if (menu.classList.contains("is-open")) {
+        menu.classList.remove("is-open");
+    }
+    var btn = document.getElementById(triggerId);
+    if (btn) setExpanded(btn, false);
+}
+
+function initScrollToTop() {
+    var btn = document.querySelector(".scrollToTop");
+    if (!btn) return;
+
+    function setVisible(visible) {
+        if (visible) btn.classList.add("is-visible");
+        else btn.classList.remove("is-visible");
+    }
+
+    var ticking = false;
+    var raf = window.requestAnimationFrame || function(cb) {
+        return window.setTimeout(cb, 16);
+    };
+
+    function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        raf(function() {
+            var y = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+            setVisible(y > 100);
+            ticking = false;
+        });
+    }
+
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+
+    btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        try {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        } catch (err) {
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
         }
     });
 }
 
+function initMenuCloseBehaviors() {
+    if (clickaway !== "yes") return;
 
+    document.addEventListener("click", function(event) {
+        if (!isMobileMenuActive()) return;
 
-// CLOSE MENU IF CLICKED AWAY FROM
+        var target = event.target;
+        var clickedInPrimary = closestPolyfill(target, "#menusub, #mobile-menu-icon");
+        var clickedInFooter = closestPolyfill(target, "#menusub-footer, #mobile-menu-icon-footer");
 
-if (clickaway == "yes") {
+        if (!clickedInPrimary) closeMenuIfOpen("menusub", "mobile-menu-icon");
+        if (!clickedInFooter) closeMenuIfOpen("menusub-footer", "mobile-menu-icon-footer");
+    });
 
-    $(document).click(function(event) {
-
-        if ($(window).width() < 740) {
-
-            if (!$(event.target).closest('#menusub').length) {
-                if (!$(event.target).closest('#mobile-menu-icon').length) {
-                    if ($('#menusub').is(":visible")) {
-                        $('#menusub').hide();
-                        const btn = document.getElementById('mobile-menu-icon');
-                        if (btn) btn.setAttribute('aria-expanded', 'false');
-                    }
-                }
-            }
+    document.addEventListener("keydown", function(e) {
+        var key = e.key || "";
+        var isEscape = key === "Escape" || e.keyCode === 27;
+        if (isMobileMenuActive() && isEscape) {
+            closeMenuIfOpen("menusub", "mobile-menu-icon");
+            closeMenuIfOpen("menusub-footer", "mobile-menu-icon-footer");
         }
     });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function() {
+        initScrollToTop();
+        initMenuCloseBehaviors();
+    });
+} else {
+    initScrollToTop();
+    initMenuCloseBehaviors();
 }
