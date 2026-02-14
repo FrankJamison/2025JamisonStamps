@@ -627,16 +627,6 @@ const stamps = [{
     {
         scott: "517",
         condition: "Used",
-        hinged: "Never Hinged",
-        gum: "No Gum",
-        grade: "Good",
-        price: 0.14,
-        location: "LA01-0022-04-02",
-        paypalId: "NSP348UNRGGCG"
-    },
-    {
-        scott: "517",
-        condition: "Used",
         hinged: "Hinged",
         gum: "No Gum",
         grade: "Good/Very Good",
@@ -1056,16 +1046,6 @@ const stamps = [{
     },
     {
         scott: "705",
-        condition: "Mint",
-        hinged: "Hinged",
-        gum: "Original Gum",
-        grade: "Good",
-        price: 0.04,
-        location: "LA01-0034-03-02",
-        paypalId: "29TK7H2DX7J2A"
-    },
-    {
-        scott: "705",
         condition: "Used",
         hinged: "Hinged",
         gum: "No Gum",
@@ -1073,16 +1053,6 @@ const stamps = [{
         price: 0.04,
         location: "SL01-0001-03-01",
         paypalId: "QAUDKLAYXR67N"
-    },
-    {
-        scott: "706",
-        condition: "Mint",
-        hinged: "Never Hinged",
-        gum: "Original Gum",
-        grade: "Good",
-        price: 0.08,
-        location: "LA01-0034-03-03",
-        paypalId: "MA8R4F8M4FW8G"
     },
     {
         scott: "706",
